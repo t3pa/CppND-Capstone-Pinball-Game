@@ -1,15 +1,15 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include "snake.h"
+#include "flipper.h"
 
-class Controller {
- public:
-  void HandleInput(bool &running, Snake &snake) const;
+class Controller
+{
+public:
+  void HandleInput(bool &running, Flipper &left, Flipper &right) const;
 
- private:
-  void ChangeDirection(Snake &snake, Snake::Direction input,
-                       Snake::Direction opposite) const;
+private:
+  void EnableFlipper(Flipper &flipper) const;
 };
 
 #endif

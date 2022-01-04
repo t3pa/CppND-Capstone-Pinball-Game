@@ -1,12 +1,25 @@
-# CPPND: Capstone Snake Game Example
+# CPPND: Capstone Project: Pinball Game
 
-This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
+## Background 
 
-<img src="snake_game.gif"/>
+This repository is for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). 
+The aim is to showcase a simple, independently developed application in C++.
 
-The Capstone Project gives you a chance to integrate what you've learned throughout this program. This project will become an important part of your portfolio to share with current and future colleagues and employers.
 
-In this project, you can build your own C++ application or extend this Snake game, following the principles you have learned throughout this Nanodegree Program. This project will demonstrate that you can independently create applications using a wide range of C++ features.
+
+
+## References
+
+This repository is forked from https://github.com/udacity/CppND-Capstone-Snake-Game, which in turn is inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl).
+
+My game implementation is inspired by the 2D game app [Vector Pinball for Android] (https://github.com/dozingcat/Vector-Pinball)
+
+
+## Licenses
+
+* Source code (src) inherits the CC ShareAlike license from where it was forked.
+* 2D graphic assets (bitmaps) have been personally licensed to me from Shutterstock. My understanding of the license is that IF YOU REDISTRIBUTE THIS SOFTWARE YOU MUST RELICENSE THE IMAGES OR REPLACE THEM BY YOUR OWN.
+
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
