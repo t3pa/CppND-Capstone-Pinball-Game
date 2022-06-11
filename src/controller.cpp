@@ -23,11 +23,18 @@ void Controller::HandleInput(bool &running, Flipper &left, Flipper &right) const
         break;
 
       case SDLK_LEFT:
+        left.Enable();
         break;
 
       case SDLK_RIGHT:
+        right.Enable();
         break;
       }
+    }
+    else 
+    {
+      left.Disable();
+      right.Disable();
     }
   }
 }

@@ -1,6 +1,7 @@
 #include "renderer.h"
 #include <iostream>
 #include <string>
+#include <cmath>
 
 Renderer::Renderer(const std::size_t screen_width,
                    const std::size_t screen_height)
@@ -43,11 +44,39 @@ Renderer::~Renderer()
 
 void Renderer::Render(Ball &ball)
 {
-
   // Clear screen
   SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, SDL_ALPHA_OPAQUE);
   SDL_RenderClear(sdl_renderer);
 
+#ifndef TEXTURE
+  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+  SDL_Rect DestR;
+  DestR.x = ball.GetPosition().first;
+  DestR.y = ball.GetPosition().second;
+  float width;
+  int diameter = 2*ball.radius;
+  float radius_squared = ball.radius * ball.radius;
+  int y = 1 - ball.radius;
+  for (; y<int(ball.radius); y++)
+  {
+    int start_x = int(-sqrt(radius_squared - y*y));
+    int end_x   = int( sqrt(radius_squared - y*y));
+    for (int x=start_x; x<end_x; x++)
+    {
+      SDL_RenderDrawPoint(sdl_renderer, DestR.x+x, DestR.y+y);
+    }
+  }
+  // {
+  //   width = float(y+int(ball.radius))/float(diameter);
+  //   width = sin(M_PI*width); 
+  //   width = ball.radius*width;  
+  //   for (int x=1-int(width); x<int(width); x++)
+  //   {
+  //     SDL_RenderDrawPoint(sdl_renderer, DestR.x+x, DestR.y+y);
+  //   }
+  // }
+
+#else
   /* Rectangles for drawing which will specify source (inside the texture)
   and target (on the screen) for rendering our textures. */
   SDL_Rect SrcR;
@@ -65,9 +94,22 @@ void Renderer::Render(Ball &ball)
 
   //Render texture to screen
   SDL_RenderCopy(sdl_renderer, ball.GetTexture(), &SrcR, &DestR);
-
+#endif
   // Update Screen
-  SDL_RenderPresent(sdl_renderer);
+  //SDL_RenderPresent(sdl_renderer);
+}
+
+void Renderer::Render(Flipper &flipper)
+{
+  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0xFF, 0xFF);
+  //Vector startpoint = flipper.GetStartpoint();
+  //Vector endpoint = flipper.GetEndpoint();
+  SDL_RenderDrawLine(sdl_renderer, int(flipper.startpoint.first), int(flipper.startpoint.second),
+                                   int(flipper.endpoint.first), int(flipper.endpoint.second));
+ // SDL_RenderPresent(sdl_renderer);
+                       
+  
+  
 }
 
 void Renderer::UpdateWindowTitle(int score, int fps)

@@ -1,7 +1,7 @@
 #include "ball.h"
 #include "renderer.h"
 
-Ball::Ball(const float radius_, const SDL_Color color_,
+Ball::Ball(const std::size_t radius_, const SDL_Color color_,
            const std::size_t screen_width_, std::size_t screen_height_,
            Renderer &renderer)
     : radius(radius_),
@@ -46,6 +46,7 @@ void Ball::Update()
   float gravity = 0.12;
   // update ball position
   position.first += velocity.first;
+  // implement the ball bouncing off a screen boundary
   if (position.first > screen_width)
   {
     position.first = screen_width;

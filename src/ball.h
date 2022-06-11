@@ -7,7 +7,7 @@ class Renderer;
 class Ball
 {
 public:
-  Ball(const float radius_, const SDL_Color color_,
+  Ball(const std::size_t radius_, const SDL_Color color_,
        const std::size_t screen_width_, std::size_t screen_height_,
        Renderer &renderer);
 
@@ -19,7 +19,7 @@ public:
   Vector GetPosition() const;
 
   const SDL_Color color; // color of the ball
-  const float radius;    // radius of the ball
+  const std::size_t radius;    // radius of the ball
 
 private:
   const std::size_t screen_width;

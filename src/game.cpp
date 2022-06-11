@@ -3,9 +3,9 @@
 #include "SDL.h"
 
 Game::Game(std::size_t screen_width, std::size_t screen_height, Renderer &renderer)
-    : ball(25.0, ColorGray, screen_width, screen_height, renderer),
-      flipper_left(),
-      flipper_right(),
+    : ball(25, ColorGray, screen_width, screen_height, renderer),
+      flipper_left({30.0,screen_height-100.0}, 1.04),
+      flipper_right({screen_width-30.0,screen_height-100.0}, -1.04),
       screen_width(screen_width),
       screen_height(screen_height),
       engine(dev())
@@ -30,6 +30,9 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     controller.HandleInput(running, flipper_left, flipper_right);
     Update();
     renderer.Render(ball);
+    renderer.Render(flipper_left);
+    renderer.Render(flipper_right);
+    renderer.UpdateScreen();
 
     frame_end = SDL_GetTicks();
 

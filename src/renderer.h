@@ -3,6 +3,7 @@
 
 #include "definitions.h"
 #include "ball.h"
+#include "flipper.h"
 
 class Renderer
 {
@@ -11,7 +12,9 @@ public:
   ~Renderer();
 
   SDL_Renderer *GetRenderer() { return sdl_renderer; };
+  void UpdateScreen() {SDL_RenderPresent(sdl_renderer);}
   void Render(Ball &ball);
+  void Render(Flipper &flipper);
   void UpdateWindowTitle(int score, int fps);
 
 private:

@@ -6,6 +6,7 @@
 
 #include "SDL.h"
 
+// an x-y coordinate vector
 typedef std::pair<float, float> Vector;
 
 //class Constants
