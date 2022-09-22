@@ -3,7 +3,7 @@
 #include "SDL.h"
 #include "flipper.h"
 
-void Controller::HandleInput(bool &running, Flipper &left, Flipper &right) const
+void Controller::HandleInput(bool &running, Ball &ball, Flipper &left, Flipper &right) const
 {
   SDL_Event e;
   while (SDL_PollEvent(&e))
@@ -16,19 +16,23 @@ void Controller::HandleInput(bool &running, Flipper &left, Flipper &right) const
     {
       switch (e.key.keysym.sym)
       {
-      case SDLK_UP:
-        break;
-
-      case SDLK_DOWN:
-        break;
-
-      case SDLK_LEFT:
-        left.Enable();
-        break;
-
-      case SDLK_RIGHT:
-        right.Enable();
-        break;
+        case SDLK_SPACE:
+          ball.Reset();        
+          break;
+        
+        case SDLK_UP:
+          break;
+  
+        case SDLK_DOWN:
+          break;
+  
+        case SDLK_LEFT:
+          left.Enable();
+          break;
+  
+        case SDLK_RIGHT:
+          right.Enable();
+          break;
       }
     }
     else 

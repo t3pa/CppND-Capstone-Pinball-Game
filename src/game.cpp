@@ -4,8 +4,8 @@
 
 Game::Game(std::size_t screen_width, std::size_t screen_height, Renderer &renderer)
     : ball(25, ColorGray, screen_width, screen_height, renderer),
-      flipper_left({30.0,screen_height-100.0}, 1.04),
-      flipper_right({screen_width-30.0,screen_height-100.0}, -1.04),
+      flipper_left({0.0,screen_height-100.0}, 1.04), // 1.04 is 60 degrees in radians
+      flipper_right({screen_width-1.0,screen_height-100.0}, -1.04),
       screen_width(screen_width),
       screen_height(screen_height),
       engine(dev())
@@ -27,7 +27,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, flipper_left, flipper_right);
+    controller.HandleInput(running, ball, flipper_left, flipper_right);
     Update();
     renderer.Render(ball);
     renderer.Render(flipper_left);
@@ -61,8 +61,33 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
 void Game::Update()
 {
-
-  ball.Update();
+  Vector ball_position = ball.GetPosition();
+  Vector ball_velocity = ball.GetVelocity();
+  ball_position.second += ball.radius;  // as an approximation, we take the bottom point of the Ball as the collision contact point.
+  ball.Update(); // update movement only subject to frame boundaries
+  
+  // update ball movement subject to flipper positions
+  if (ball_velocity.second > 0.0) // we only consider cases where the ball is falling down
+  {
+    // two-phase approach for Flipper interaction: first check if Ball is within bounding box 
+    // of the Flipper, then if Ball actually touches the Flipper line.
+    if (flipper_left.IsInBoundingBox(ball_position))
+    {   
+      if (flipper_left.IsColliding(ball_position))
+      {
+        ball.Collide(flipper_left.GetAngle());
+        std::cout << "Collide left x=" << ball_position.first << "\n";
+      }    
+    }
+    if (flipper_right.IsInBoundingBox(ball_position))
+    {
+      if (flipper_right.IsColliding(ball_position))
+      {
+        ball.Collide(flipper_right.GetAngle());
+        std::cout << "Collide right x=" << ball_position.first << "\n";
+      }
+    }
+  }
 }
 
 int Game::GetScore() const { return score; }

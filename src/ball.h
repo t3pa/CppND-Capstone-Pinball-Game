@@ -14,9 +14,11 @@ public:
   ~Ball() { SDL_DestroyTexture(texture); }
 
   SDL_Texture *GetTexture() { return texture; }
+  void Reset();
   void Update();                        // updates position and velocity, taking into account gravity
-  void Collision(const Vector surface); // calculates the collision of Ball against a surface
+  void Collide(float angle); 
   Vector GetPosition() const;
+  Vector GetVelocity() const;
 
   const SDL_Color color; // color of the ball
   const std::size_t radius;    // radius of the ball

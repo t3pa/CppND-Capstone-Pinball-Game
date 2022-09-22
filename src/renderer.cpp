@@ -49,7 +49,8 @@ void Renderer::Render(Ball &ball)
   SDL_RenderClear(sdl_renderer);
 
 #ifndef TEXTURE
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+  // render the ball at its current position by drawing points
+  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF); // color: white
   SDL_Rect DestR;
   DestR.x = ball.GetPosition().first;
   DestR.y = ball.GetPosition().second;
@@ -66,16 +67,6 @@ void Renderer::Render(Ball &ball)
       SDL_RenderDrawPoint(sdl_renderer, DestR.x+x, DestR.y+y);
     }
   }
-  // {
-  //   width = float(y+int(ball.radius))/float(diameter);
-  //   width = sin(M_PI*width); 
-  //   width = ball.radius*width;  
-  //   for (int x=1-int(width); x<int(width); x++)
-  //   {
-  //     SDL_RenderDrawPoint(sdl_renderer, DestR.x+x, DestR.y+y);
-  //   }
-  // }
-
 #else
   /* Rectangles for drawing which will specify source (inside the texture)
   and target (on the screen) for rendering our textures. */
@@ -95,20 +86,19 @@ void Renderer::Render(Ball &ball)
   //Render texture to screen
   SDL_RenderCopy(sdl_renderer, ball.GetTexture(), &SrcR, &DestR);
 #endif
-  // Update Screen
-  //SDL_RenderPresent(sdl_renderer);
 }
 
 void Renderer::Render(Flipper &flipper)
 {
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0xFF, 0xFF);
-  //Vector startpoint = flipper.GetStartpoint();
-  //Vector endpoint = flipper.GetEndpoint();
   SDL_RenderDrawLine(sdl_renderer, int(flipper.startpoint.first), int(flipper.startpoint.second),
                                    int(flipper.endpoint.first), int(flipper.endpoint.second));
- // SDL_RenderPresent(sdl_renderer);
-                       
-  
+  // draw bounding box
+  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0x00, 0xFF);
+  SDL_RenderDrawLine(sdl_renderer, int(flipper.startpoint.first), int(flipper.startpoint.second),
+                                   int(flipper.startpoint.first), int(flipper.endpoint.second));
+  SDL_RenderDrawLine(sdl_renderer, int(flipper.startpoint.first), int(flipper.startpoint.second),
+                                   int(flipper.endpoint.first), int(flipper.startpoint.second));
   
 }
 
