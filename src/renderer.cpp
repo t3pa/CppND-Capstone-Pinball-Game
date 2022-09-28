@@ -97,8 +97,8 @@ void Renderer::Render(Flipper &flipper)
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0x00, 0xFF);
   SDL_RenderDrawLine(sdl_renderer, int(flipper.startpoint.first), int(flipper.startpoint.second),
                                    int(flipper.startpoint.first), int(flipper.endpoint.second));
-  SDL_RenderDrawLine(sdl_renderer, int(flipper.startpoint.first), int(flipper.startpoint.second),
-                                   int(flipper.endpoint.first), int(flipper.startpoint.second));
+  //SDL_RenderDrawLine(sdl_renderer, int(flipper.startpoint.first), int(flipper.startpoint.second),
+  //                                  int(flipper.endpoint.first), int(flipper.startpoint.second));
   
 }
 

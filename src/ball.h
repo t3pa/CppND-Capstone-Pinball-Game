@@ -15,8 +15,9 @@ public:
 
   SDL_Texture *GetTexture() { return texture; }
   void Reset();
-  void Update();                        // updates position and velocity, taking into account gravity
-  void Collide(float angle); 
+  void Update(float gravity, float damping, float max_y); // updates position and velocity, taking into account gravity. damping is applied when hitting the frame boundary.
+  void Collide(float angle, float damping = 0.88);
+  void VerticalImpulse();
   Vector GetPosition() const;
   Vector GetVelocity() const;
 

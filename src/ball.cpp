@@ -36,10 +36,10 @@ void Ball::Reset()
 {
   if (position.second > screen_height-1) 
   {
-    position.first = 250.0;
+    position.first = 200.0;
     position.second = 0.0;
     velocity.first = 5.0;
-    velocity.second = 3.5;
+    velocity.second = 5.5;
   }  
 }
 
@@ -59,12 +59,11 @@ Vector Ball::GetVelocity() const
   return v;
 }
 
-void Ball::Update()
-{
-  float damping = 0.88;
-  float gravity = 0.12;
+void Ball::Update(float gravity, float damping, float max_y)
+{    
   // update ball position
   position.first += velocity.first;
+  position.second += velocity.second;
   // implement the ball bouncing off a screen boundary
   if (position.first > screen_width)
   {
@@ -76,28 +75,37 @@ void Ball::Update()
     position.first = 0.0;
     velocity.first *= -1.0 * damping;
   }
-  position.second += velocity.second;
-  if (position.second > screen_height)
+  if (position.second > max_y)
+  {
+    position.second = max_y;
+    velocity.second *= -1.0 * damping;
+  }   
+  else if (position.second > screen_height)
   {
     position.second = screen_height;
-    velocity.second *= -1.0 * damping;
+    velocity.first = velocity.second = 0.0;//*= -1.0 * damping;
   }
   else if (position.second < 0.0)
   {
     position.second = 0.0;
     velocity.second *= -1.0 * damping;
-  }
-
-  // update ball velocity by applying gravity
+  }  
+  // update ball vertical velocity by applying gravity
   velocity.second += gravity;
+}
+
+void Ball::VerticalImpulse()
+{
+  if (velocity.second > 0.0)
+     velocity.second *= -1.0;
+  velocity.second -= 4.0;
 }
 
 // to emulate the Ball colliding with a line,
 // we pretend the Ball collides with a horizontal line (which inverts its y-velocity)
 // and then rotate the velocity vector by the actual angle of the line versus the horizontal.
-void Ball::Collide(float angle)
+void Ball::Collide(float angle, float damping)
 {
-  float damping = 0.88;
   velocity.second *= -1.0 * damping;
   Vector new_velocity;
   new_velocity.first  = velocity.first*cos(angle) - velocity.second*sin(angle);
