@@ -42,15 +42,20 @@ Renderer::~Renderer()
   SDL_Quit();
 }
 
-void Renderer::Render(Ball &ball)
+void Renderer::ClearScreen()
 {
   // Clear screen
   SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, SDL_ALPHA_OPAQUE);
-  SDL_RenderClear(sdl_renderer);
+  SDL_RenderClear(sdl_renderer);  
+}
 
+void Renderer::Render(const Ball &ball)
+{
 #ifndef TEXTURE
   // render the ball at its current position by drawing points
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF); // color: white
+  if (!ball.IsAlive())
+    return;
+  SDL_SetRenderDrawColor(sdl_renderer, ball.color.r, ball.color.g, ball.color.b, 0xFF);
   SDL_Rect DestR;
   DestR.x = ball.GetPosition().first;
   DestR.y = ball.GetPosition().second;
@@ -102,8 +107,8 @@ void Renderer::Render(Flipper &flipper)
   
 }
 
-void Renderer::UpdateWindowTitle(int score, int fps)
+void Renderer::UpdateWindowTitle(int score, int highscore, int fps)
 {
-  std::string title{"Pinball Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
+  std::string title{"Pinball Score: " + std::to_string(score) + " Highscore: " + std::to_string(highscore) + " FPS: " + std::to_string(fps)};
   SDL_SetWindowTitle(sdl_window, title.c_str());
 }

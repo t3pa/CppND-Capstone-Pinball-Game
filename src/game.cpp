@@ -3,7 +3,9 @@
 #include "SDL.h"
 
 Game::Game(std::size_t screen_width, std::size_t screen_height, Renderer &renderer)
-    : ball(25, ColorGray, screen_width, screen_height, renderer),
+    : ball(30, BallInitialPosition, ColorWhite, screen_width, screen_height, renderer),
+      bounce_one(40, BounceOnePosition, ColorGreen, screen_width, screen_height, renderer),
+      bounce_two(40, BounceTwoPosition, ColorRed, screen_width, screen_height, renderer),
       flipper_left({0.0,screen_height-200.0}, 1.3), // 1.04 is 60 degrees in radians
       flipper_right({screen_width-1.0,screen_height-200.0}, -1.3),
       screen_width(screen_width),
@@ -29,7 +31,10 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, ball, flipper_left, flipper_right);
     Update();
+    renderer.ClearScreen();
     renderer.Render(ball);
+    renderer.Render(bounce_one);
+    renderer.Render(bounce_two);
     renderer.Render(flipper_left);
     renderer.Render(flipper_right);
     renderer.UpdateScreen();
@@ -44,7 +49,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000)
     {
-      renderer.UpdateWindowTitle(score, frame_count);
+      renderer.UpdateWindowTitle(score, highscore, frame_count);
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -73,10 +78,9 @@ void Game::Update()
      if (flipper_left.IsInBoundingBox(ball_position))
      {
        if (ball_position.second < flipper_left.endpoint.second) // Flipper was below the Ball?
-       {
-         //ball.Collide(0.0, DAMPING_FLIPPER);
+       {         
          ball.VerticalImpulse();
-         std::cout << "Collide flip L x=" << ball_position.first << "\n";
+         //std::cout << "Collide flip L x=" << ball_position.first << "\n";
        }
      }    
   }    
@@ -85,10 +89,9 @@ void Game::Update()
     if (flipper_right.IsInBoundingBox(ball_position))
      {
        if (ball_position.second < flipper_right.endpoint.second) // Flipper was below the Ball?
-       {
-         //ball.Collide(0.0, DAMPING_FLIPPER);
+       {         
          ball.VerticalImpulse();
-         std::cout << "Collide flip R x=" << ball_position.first << "\n";
+         //std::cout << "Collide flip R x=" << ball_position.first << "\n";
        }
      }    
   }
@@ -120,6 +123,24 @@ void Game::Update()
   }
   else
     ball.Update(GRAVITY, DAMPING_BOUNDARY, screen_height);
+  if (ball.Collide(bounce_one))
+  {
+    bounce_one.color = ColorPurple;
+    score += 100;    
+  }
+  else
+    bounce_one.color = ColorGreen;    
+  if (ball.Collide(bounce_two))
+  {
+    bounce_two.color = ColorPurple;
+    score += 100;    
+  }
+  else
+    bounce_two.color = ColorRed;
+  if (score > highscore)
+    highscore = score;
+  if (!ball.IsAlive())
+    score = 0;
   flipper_left.Update();
   flipper_right.Update();
 }

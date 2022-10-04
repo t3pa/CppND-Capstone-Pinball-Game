@@ -21,6 +21,8 @@ private:
   const std::size_t screen_height;
 
   Ball ball;
+  Ball bounce_one;
+  Ball bounce_two;
   Flipper flipper_left;
   Flipper flipper_right;
 
@@ -28,6 +30,7 @@ private:
   std::mt19937 engine;
 
   int score{0};
+  int highscore{0};
 
   void Update();
 };

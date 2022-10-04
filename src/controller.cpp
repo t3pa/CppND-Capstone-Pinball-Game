@@ -17,7 +17,7 @@ void Controller::HandleInput(bool &running, Ball &ball, Flipper &left, Flipper &
       switch (e.key.keysym.sym)
       {
         case SDLK_SPACE:
-          ball.Reset();        
+          ball.Reset(BallInitialPosition);        
           break;
         
         case SDLK_UP:

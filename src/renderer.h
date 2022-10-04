@@ -12,10 +12,11 @@ public:
   ~Renderer();
 
   SDL_Renderer *GetRenderer() { return sdl_renderer; };
+  void ClearScreen();
   void UpdateScreen() {SDL_RenderPresent(sdl_renderer);}
-  void Render(Ball &ball);
+  void Render(const Ball &ball);
   void Render(Flipper &flipper);
-  void UpdateWindowTitle(int score, int fps);
+  void UpdateWindowTitle(int score, int highscore, int fps);
 
 private:
   SDL_Window *sdl_window;
