@@ -13,6 +13,7 @@ Ball::Ball(const std::size_t radius_, const Vector position_, const SDL_Color co
       velocity(5.0, 5.5),
       alive(true)
 {
+  #ifdef TEXTURE
   //Load image at specified path
   std::string path("assets/ball2.bmp");
   SDL_Surface *surface = SDL_LoadBMP(path.c_str());
@@ -32,6 +33,7 @@ Ball::Ball(const std::size_t radius_, const Vector position_, const SDL_Color co
     //Get rid of old loaded surface
     SDL_FreeSurface(surface);
   }
+  #endif
 };
 
 void Ball::Reset(const Vector position_)
@@ -39,27 +41,21 @@ void Ball::Reset(const Vector position_)
   position = position_;
   velocity.first = 5.0;
   velocity.second = 5.5;
-  alive = true;  
+  alive = true;
 }
 
 Vector Ball::GetPosition() const
 {
-  Vector v;
-  v.first = position.first;
-  v.second = position.second;
-  return v;
+  return position;
 }
 
 Vector Ball::GetVelocity() const
 {
-  Vector v;
-  v.first = velocity.first;
-  v.second = velocity.second;
-  return v;
+  return velocity;
 }
 
 void Ball::Update(float gravity, float damping, float max_y)
-{    
+{
   if (!alive)
     return;
   // update ball position
@@ -86,21 +82,21 @@ void Ball::Update(float gravity, float damping, float max_y)
   {
     position.second = max_y;
     velocity.second *= -1.0 * damping;
-  }   
+  }
   else if (position.second < 0.0)
   {
     position.second = 0.0;
     velocity.second *= -1.0 * damping;
-  }  
+  }
   // update ball vertical velocity by applying gravity
   velocity.second += gravity;
 }
 
 void Ball::VerticalImpulse()
 {
-  if (velocity.second > 0.0)
+  if (velocity.second > 0.0) // impulse direction is always up
      velocity.second *= -1.0;
-  velocity.second -= 5.0;
+  velocity.second -= FLIPPER_IMPULSE; // increase "up" velocity
 }
 
 // to emulate the Ball colliding with a line,
@@ -115,6 +111,9 @@ void Ball::Collide(float angle, float damping)
   velocity = new_velocity;
 }
 
+// returns true if this Ball and other Ball are colliding (bounding boxes are touching)
+// calculates the collision angle between the Ball centers
+// and updates this Ball velocity accordingly
 bool Ball::Collide(const Ball other)
 {
   Vector other_position = other.GetPosition();
@@ -122,6 +121,7 @@ bool Ball::Collide(const Ball other)
   bool vertical_smaller = position.second < other_position.second;
   bool horizontal_overlap;
   bool vertical_overlap;
+  // first we check if the bounding boxes of this Ball and the other Ball overlap
   if (horizontal_smaller)
     horizontal_overlap = (position.first+radius > other_position.first-other.radius);
   else
@@ -129,10 +129,11 @@ bool Ball::Collide(const Ball other)
   if (vertical_smaller)
     vertical_overlap = (position.second+radius > other_position.second-other.radius);
   else
-    vertical_overlap = (position.second-radius < other_position.second+other.radius);    
-  if (horizontal_overlap && vertical_overlap) 
+    vertical_overlap = (position.second-radius < other_position.second+other.radius);
+  if (horizontal_overlap && vertical_overlap)
   {
      //std::cout << "Collide ball x=" << position.first << "\n " ;//<< std::flush;
+     // now we construct a triangle where the hypotenuse connects the two centers of the Balls
      float deltax, deltay, hypotenuse;
      if (horizontal_smaller)
        deltax = other_position.first - position.first;
@@ -142,7 +143,7 @@ bool Ball::Collide(const Ball other)
        deltay = other_position.second - position.second;
      else
        deltay = position.second - other_position.second;
-     
+
      hypotenuse = sqrt(deltax*deltax + deltay*deltay);
      float collision_angle = asin(deltay / hypotenuse);
      if (horizontal_smaller)
@@ -150,15 +151,15 @@ bool Ball::Collide(const Ball other)
      if (vertical_smaller)
        collision_angle = -collision_angle;
      //std::cout << "Collide ball x=" << position.first << " angle=" << (collision_angle/(2*M_PI))*360.0 << "\n " ;//<< std::flush;
-    
+
     float angle = collision_angle+M_PI;
     Vector new_velocity;
     new_velocity.first  = velocity.first*cos(angle) - velocity.second*sin(angle);
     new_velocity.second = velocity.first*sin(angle) + velocity.second*cos(angle);
     velocity = new_velocity;
     return true;
-  } 
-  else 
+  }
+  else
     return false;
-  
+
 }

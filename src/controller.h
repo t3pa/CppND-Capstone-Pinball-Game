@@ -9,8 +9,6 @@ class Controller
 public:
   void HandleInput(bool &running, Ball &ball, Flipper &left, Flipper &right) const;
 
-private:
-  void EnableFlipper(Flipper &flipper) const;
 };
 
 #endif

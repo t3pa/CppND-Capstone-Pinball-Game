@@ -6,11 +6,10 @@ Game::Game(std::size_t screen_width, std::size_t screen_height, Renderer &render
     : ball(30, BallInitialPosition, ColorWhite, screen_width, screen_height, renderer),
       bounce_one(40, BounceOnePosition, ColorGreen, screen_width, screen_height, renderer),
       bounce_two(40, BounceTwoPosition, ColorRed, screen_width, screen_height, renderer),
-      flipper_left({0.0,screen_height-200.0}, 1.3), // 1.04 is 60 degrees in radians
+      flipper_left({0.0,screen_height-200.0}, 1.3), // 1.3 radians is 74 degrees downward tilt
       flipper_right({screen_width-1.0,screen_height-200.0}, -1.3),
       screen_width(screen_width),
-      screen_height(screen_height),
-      engine(dev())
+      screen_height(screen_height)
 {
 }
 
@@ -69,8 +68,7 @@ void Game::Update()
   Vector ball_position = ball.GetPosition();
   Vector ball_velocity = ball.GetVelocity();
   ball_position.second += ball.radius;  // as an approximation, we take the bottom point of the Ball as the collision contact point.
-  
-    
+
   // update ball movement subject to flipper positions
   // first check if Flipper was moved
   if (flipper_left.WasEnabled())
@@ -78,38 +76,38 @@ void Game::Update()
      if (flipper_left.IsInBoundingBox(ball_position))
      {
        if (ball_position.second < flipper_left.endpoint.second) // Flipper was below the Ball?
-       {         
+       {
          ball.VerticalImpulse();
          //std::cout << "Collide flip L x=" << ball_position.first << "\n";
        }
-     }    
-  }    
+     }
+  }
   else if (flipper_right.WasEnabled())
   {
     if (flipper_right.IsInBoundingBox(ball_position))
      {
        if (ball_position.second < flipper_right.endpoint.second) // Flipper was below the Ball?
-       {         
+       {
          ball.VerticalImpulse();
          //std::cout << "Collide flip R x=" << ball_position.first << "\n";
        }
-     }    
+     }
   }
   // else check if ball fell onto Flipper
   else if (ball_velocity.second > 0.0) // we only consider cases where the ball is falling down
   {
-    // two-phase approach for Flipper interaction: first check if Ball is within bounding box 
+    // two-phase approach for Flipper interaction: first check if Ball is within bounding box
     // of the Flipper, then if Ball actually touches the Flipper line.
     Vector collision_point;
     if (flipper_left.IsInBoundingBox(ball_position)
     && flipper_left.IsColliding(ball_position, collision_point))
       {
-        //std::cout << "Collide left " << std::flush; 
-        ball.Collide(flipper_left.GetAngle(), DAMPING_FALLING);        
+        //std::cout << "Collide left " << std::flush;
+        ball.Collide(flipper_left.GetAngle(), DAMPING_FALLING);
         ball.Update(GRAVITY, DAMPING_BOUNDARY, collision_point.second-ball.radius); // update movement only subject to frame boundaries
         //std::cout << " ball.x= "<< ball_position.first << " ball.y= "<< ball_position.second << "\n";
-      }    
-    
+      }
+
     else if (flipper_right.IsInBoundingBox(ball_position)
     && flipper_right.IsColliding(ball_position, collision_point))
       {
@@ -117,7 +115,7 @@ void Game::Update()
         ball.Collide(flipper_right.GetAngle(), DAMPING_FALLING);
         ball.Update(GRAVITY, DAMPING_BOUNDARY, collision_point.second-ball.radius); // update movement only subject to frame boundaries
         //std::cout << " ball.x= "<< ball_position.first << " ball.y= "<< ball_position.second << "\n";
-      }    
+      }
     else
       ball.Update(GRAVITY, DAMPING_BOUNDARY, screen_height); // update movement only subject to frame boundaries
   }
@@ -126,14 +124,14 @@ void Game::Update()
   if (ball.Collide(bounce_one))
   {
     bounce_one.color = ColorPurple;
-    score += 100;    
+    score += 100;
   }
   else
-    bounce_one.color = ColorGreen;    
+    bounce_one.color = ColorGreen;
   if (ball.Collide(bounce_two))
   {
     bounce_two.color = ColorPurple;
-    score += 100;    
+    score += 100;
   }
   else
     bounce_two.color = ColorRed;
@@ -145,4 +143,4 @@ void Game::Update()
   flipper_right.Update();
 }
 
-int Game::GetScore() const { return score; }
+int Game::GetHighScore() const { return highscore; }

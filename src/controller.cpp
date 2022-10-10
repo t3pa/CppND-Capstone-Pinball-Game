@@ -1,5 +1,4 @@
 #include "controller.h"
-#include <iostream>
 #include "SDL.h"
 #include "flipper.h"
 
@@ -17,25 +16,25 @@ void Controller::HandleInput(bool &running, Ball &ball, Flipper &left, Flipper &
       switch (e.key.keysym.sym)
       {
         case SDLK_SPACE:
-          ball.Reset(BallInitialPosition);        
+          ball.Reset(BallInitialPosition);
           break;
-        
+
         case SDLK_UP:
           break;
-  
+
         case SDLK_DOWN:
           break;
-  
+
         case SDLK_LEFT:
           left.Enable();
           break;
-  
+
         case SDLK_RIGHT:
           right.Enable();
           break;
       }
     }
-    else 
+    else
     {
       left.Disable();
       right.Disable();

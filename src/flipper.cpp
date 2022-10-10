@@ -13,18 +13,18 @@ Flipper::Flipper(const Vector startpoint_, const float fixedangle_)
   // endpoint is at upper right of startpoint
   endpoint_enabled = {startpoint_.first + fixedlength*sin(fixedangle),
                       startpoint_.second - fixedlength*cos(fixedangle)};
-    
-  // calculate gradient m = dy/dx    
-  gradient_enabled  = (endpoint_enabled.second - startpoint.second)  / (endpoint_enabled.first - startpoint.first); 
+
+  // calculate gradient m = dy/dx
+  gradient_enabled  = (endpoint_enabled.second - startpoint.second)  / (endpoint_enabled.first - startpoint.first);
   gradient_disabled = (endpoint_disabled.second - startpoint.second) / (endpoint_disabled.first - startpoint.first);
 }
 void Flipper::Enable()
-{    
-  enabled_next = true;  
+{
+  enabled_next = true;
 }
 
 void Flipper::Disable()
-{  
+{
   enabled_next = false;
 }
 
@@ -40,15 +40,15 @@ void Flipper::Update()
   {
     endpoint = endpoint_disabled;
     gradient = gradient_disabled;
-  }  
+  }
 }
 
-bool Flipper::WasEnabled()
+bool Flipper::WasEnabled() const
 {
   return (enabled_next && !enabled); // rising edge detection
 }
 
-float Flipper::GetAngle()
+float Flipper::GetAngle() const
 {
   if (!enabled)
     return fixedangle;
@@ -56,7 +56,7 @@ float Flipper::GetAngle()
     return -fixedangle;
 }
 
-bool Flipper::IsInBoundingBox(const Vector point)
+bool Flipper::IsInBoundingBox(const Vector point) const
 {
   if ((startpoint.first < endpoint.first && point.first > startpoint.first && point.first < endpoint.first) // horizontal condition for "left" flipper
    || (startpoint.first > endpoint.first && point.first < startpoint.first && point.first > endpoint.first)) // horizontal condition for "right" flipper
@@ -66,15 +66,15 @@ bool Flipper::IsInBoundingBox(const Vector point)
       return true;
     // when enabled, endpoint marks the upper right corner of the bounding box
     else if (enabled && point.second > endpoint.second && point.second < startpoint.second)
-      return true;  
+      return true;
   }
-  return false; 
+  return false;
 }
 
-bool Flipper::IsColliding(const Vector point, Vector &collision_point)
-{  
+bool Flipper::IsColliding(const Vector point, Vector &collision_point) const
+{
   float dx = point.first - startpoint.first;  // x-coordinate of the point relative to startpoint
-  float dy = dx * gradient;                   
+  float dy = dx * gradient;
   float line_y = startpoint.second + dy;      // y-coordinate of the line at this x
   if ((line_y > point.second && (line_y - point.second < COLLISION_TOLERANCE)) // does the point almost touch the line?
    || (line_y < point.second && (point.second - line_y < COLLISION_TOLERANCE)))
@@ -85,5 +85,5 @@ bool Flipper::IsColliding(const Vector point, Vector &collision_point)
      return true;
    }
   else
-    return false;  
+    return false;
 }

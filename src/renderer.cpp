@@ -46,7 +46,7 @@ void Renderer::ClearScreen()
 {
   // Clear screen
   SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, SDL_ALPHA_OPAQUE);
-  SDL_RenderClear(sdl_renderer);  
+  SDL_RenderClear(sdl_renderer);
 }
 
 void Renderer::Render(const Ball &ball)
@@ -93,18 +93,16 @@ void Renderer::Render(const Ball &ball)
 #endif
 }
 
-void Renderer::Render(Flipper &flipper)
+void Renderer::Render(const Flipper &flipper)
 {
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0xFF, 0xFF);
+  // draw Flipper line
   SDL_RenderDrawLine(sdl_renderer, int(flipper.startpoint.first), int(flipper.startpoint.second),
                                    int(flipper.endpoint.first), int(flipper.endpoint.second));
-  // draw bounding box
+  // draw side line
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0x00, 0xFF);
   SDL_RenderDrawLine(sdl_renderer, int(flipper.startpoint.first), int(flipper.startpoint.second),
                                    int(flipper.startpoint.first), int(flipper.endpoint.second));
-  //SDL_RenderDrawLine(sdl_renderer, int(flipper.startpoint.first), int(flipper.startpoint.second),
-  //                                  int(flipper.endpoint.first), int(flipper.startpoint.second));
-  
 }
 
 void Renderer::UpdateWindowTitle(int score, int highscore, int fps)
